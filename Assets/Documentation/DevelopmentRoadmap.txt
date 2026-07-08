@@ -1,0 +1,81 @@
+HFGE1181 Top-Down Shooter V2
+Development Roadmap
+
+==========================
+SPRINT 1 - FOUNDATION
+==========================
+
+[✓] Create V2 Project
+[✓] Import Asset Pack
+[✓] Create Folder Structure
+[✓] Organize Assets
+[✓] Create Custom Layers
+[✓] Create Documentation Folder
+[✓] Create Development Roadmap
+[✓] GitHub Repository Setup
+
+==========================
+SPRINT 2 - LEVEL DESIGN
+==========================
+
+[ ] Design Graveyard
+[ ] Design Mausoleum
+[ ] Design Catacombs
+[ ] Add Entrances
+[ ] Add One-Way Entrances
+[ ] Player Boundaries
+[ ] Enemy Boundaries
+[ ] Spawn Boundaries
+
+==========================
+SPRINT 3 - PLAYER
+==========================
+
+[ ] Player Movement
+[ ] Camera
+[ ] Movement Feel
+[ ] Speed Tuning
+
+==========================
+SPRINT 4 - ENEMIES
+==========================
+
+[ ] Enemy Spawn
+[ ] Enemy Shooting
+[ ] Enemy Death Feedback
+[ ] Balance
+
+==========================
+SPRINT 5 - WEAPONS
+==========================
+
+[ ] Weapon Pickups
+[ ] Weapon Swapping
+[ ] Barricades
+
+==========================
+SPRINT 6 - UI
+==========================
+
+[ ] HUD
+[ ] Main Menu
+[ ] Pause Menu
+[ ] Scene Management
+
+==========================
+SPRINT 7 - POLISH
+==========================
+
+[ ] Audio
+[ ] Particles
+[ ] Feedback
+[ ] Mobile Testing
+
+==========================
+SPRINT 8 - SUBMISSION
+==========================
+
+[ ] APK
+[ ] Final Testing
+[ ] GitHub Check
+[ ] PDF Submission
