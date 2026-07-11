@@ -44,12 +44,17 @@ public class EnemyAI : MonoBehaviour
         animator = GetComponent<Animator>();
 
         playerObj = GameObject.FindGameObjectWithTag("Player");
-        if (playerObj != null)
+
+        if (playerObj == null)
         {
+            Debug.LogError("Player NOT found!");
+        }
+        else
+        {
+            Debug.Log("Player found: " + playerObj.name);
             enemy = playerObj.transform;
         }
     }
-
     private void Update()
     {
         if (isKnockedBack)
@@ -63,6 +68,7 @@ public class EnemyAI : MonoBehaviour
                 isStunned = true;
                 stunTimer = stunDurationAfterKnockback;
             }
+
             animator.SetBool("isWalking", false);
             return;
         }
@@ -70,6 +76,7 @@ public class EnemyAI : MonoBehaviour
         if (isStunned)
         {
             stunTimer -= Time.deltaTime;
+
             if (stunTimer <= 0f)
             {
                 isStunned = false;
@@ -83,12 +90,15 @@ public class EnemyAI : MonoBehaviour
 
         if (isAttacking)
         {
+            Debug.Log("isAttacking = TRUE");
+
             fireRateTimer -= Time.deltaTime;
+
             if (fireRateTimer <= 0f)
             {
+                Debug.Log("Calling AttackPlayer()");
                 AttackPlayer();
             }
-
         }
 
         if (enemy != null)
@@ -102,8 +112,7 @@ public class EnemyAI : MonoBehaviour
                 RotateAwayFromPlayer();
             }
 
-                Movement();
-
+            Movement();
         }
     }
 
@@ -116,19 +125,18 @@ public class EnemyAI : MonoBehaviour
     private void Movement()
     {
         PlayerHealth pH = playerObj.GetComponent<PlayerHealth>();
+
         if (pH != null && pH.isPlayerDead)
         {
             animator.SetBool("isWalking", false);
             return;
         }
 
-        if (CalculateDistance() !<= attackRange)
-        {
-            isAttacking = false;
-        }
-
+        // Move towards the player until inside attack range
         if (CalculateDistance() > attackRange)
         {
+            isAttacking = false;
+
             transform.position = Vector2.MoveTowards(
                 transform.position,
                 enemy.position,
@@ -137,28 +145,14 @@ public class EnemyAI : MonoBehaviour
 
             animator.SetBool("isWalking", true);
         }
-        else if (CalculateDistance() <= attackRange && CalculateDistance() > minimumPlayerDistance)
+        else
         {
+            Debug.Log("Entered Attack Range");
+
             isAttacking = true;
             animator.SetBool("isWalking", false);
         }
-        else if (CalculateDistance() <= minimumPlayerDistance)
-        {
-
-            transform.position = Vector2.MoveTowards(
-               transform.position,
-               transform.position + (transform.position - enemy.position),
-               moveSpeed * Time.deltaTime
-           );
-
-            animator.SetBool("isWalking", true);
-        }
-        else
-        {
-            animator.SetBool("isWalking", false);
-        }
     }
-
     private void RotateTowardsPlayer()
     {
         Vector2 direction = (enemy.position - transform.position).normalized;
@@ -175,10 +169,29 @@ public class EnemyAI : MonoBehaviour
 
     private void AttackPlayer()
     {
-        animator.SetTrigger(attackTriggerName);
-        GameObject bullet = Instantiate(projectile, firePoint.position, firePoint.rotation);
-        fireRateTimer = fireRate;
+        if (projectile == null || firePoint == null)
+        {
+            Debug.LogError("Projectile or FirePoint is missing!");
+            return;
+        }
 
+        Debug.Log("Enemy Fired");
+
+        GameObject bullet = Instantiate(projectile, firePoint.position, firePoint.rotation);
+
+        Bullet bulletScript = bullet.GetComponent<Bullet>();
+
+        if (bulletScript != null)
+        {
+            bulletScript.SetEnemyBullet(true);
+        }
+
+        if (animator != null)
+        {
+            animator.SetTrigger(attackTriggerName);
+        }
+
+        fireRateTimer = fireRate;
     }
 
     public void ApplyKnockback(Vector2 direction, float force)

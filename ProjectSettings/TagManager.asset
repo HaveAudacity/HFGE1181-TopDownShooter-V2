@@ -3,24 +3,25 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Enemy
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Enemy
   - Water
   - UI
   - 
   - 
-  - Player
-  - Enemy
-  - Projectile
-  - PlayerProjectile
-  - EnemyProjectile
-  - Floor
-  - Wall
-  - Barricade
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 

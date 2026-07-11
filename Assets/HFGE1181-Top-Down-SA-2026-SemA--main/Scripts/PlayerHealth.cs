@@ -66,7 +66,10 @@ public class PlayerHealth : MonoBehaviour
             UIManager.Instance.UpdateHealth(currentHealth, maxHealth);
         }
 
-        AudioManager.Instance.Play("PlayerTakeDamage");
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.Play("PlayerTakeDamage");
+        }
 
         PlayerController playerController = GetComponent<PlayerController>();
         if (playerController != null)
@@ -109,7 +112,11 @@ public class PlayerHealth : MonoBehaviour
         gameObject.tag = "Untagged";
         isPlayerDead = true;
 
-        AudioManager.Instance.Play("PlayerDeath");
+      
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.Play("PlayerDeath");
+        }
 
         if (rb != null)
         {

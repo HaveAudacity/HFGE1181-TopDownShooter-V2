@@ -100,9 +100,10 @@ public class PlayerWeaponManager : MonoBehaviour
         {
             currentPickup = weaponData.pickupPrefab;
 
-            playerAnimator.SetTrigger(weaponData.idleTrigger);
-
-
+            if (playerAnimator != null)
+            {
+                playerAnimator.SetTrigger(weaponData.idleTrigger);
+            }
         }
 
         Transform firePointTransform = weaponPrefab.transform.Find("WeaponFirePoint");
