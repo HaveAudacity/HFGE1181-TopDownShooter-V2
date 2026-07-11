@@ -22,12 +22,27 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        // Ignore the player
+        if (other.CompareTag("Player"))
         {
-            PlayerHealth playerHealth = other.gameObject.GetComponent<PlayerHealth>();
-
+            return;
         }
-        
+
+        // Damage enemies
+        if (other.CompareTag("Enemy"))
+        {
+            EnemyHealth enemyHealth = other.GetComponent<EnemyHealth>();
+
+            if (enemyHealth != null)
+            {
+                enemyHealth.TakeDamage(damage);
+            }
+        }
+
+        // Destroy on any valid collision except the player
         Destroy(gameObject);
     }
 }
+
+
+

@@ -42,8 +42,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7685825037683527959}
   - component: {fileID: 440675680796240782}
-  - component: {fileID: 4703234591637104999}
-  - component: {fileID: 6011525288164226206}
   m_Layer: 0
   m_Name: Graphics
   m_TagString: Untagged
@@ -121,39 +119,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &4703234591637104999
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3645537853982377059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 31de28acd285c7e41af346faac25185d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pickupPrefab: {fileID: 0}
-  shootTrigger: shoot
-  idleTrigger: idle
-  sprintTrigger: sprint
---- !u!114 &6011525288164226206
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3645537853982377059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d980322dacdffd943aa17d0c2fb63374, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  fireRate: 0.5
-  maxAmmo: 6
-  reloadTime: 1.5
-  bulletPrefab: {fileID: 0}
-  firePoint: {fileID: 4631243502018330820}
 --- !u!1 &4392241939737196753
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,6 +128,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1863783550093159322}
+  - component: {fileID: 1095191089535843567}
+  - component: {fileID: 4607111590394820477}
   m_Layer: 0
   m_Name: Pistol
   m_TagString: Untagged
@@ -186,3 +153,36 @@ Transform:
   - {fileID: 4631243502018330820}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1095191089535843567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4392241939737196753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d980322dacdffd943aa17d0c2fb63374, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fireRate: 0.5
+  maxAmmo: 6
+  reloadTime: 1.5
+  bulletPrefab: {fileID: 2010465963296747842, guid: ccb0713972ef30346a7d2e76957b48c1, type: 3}
+  firePoint: {fileID: 4631243502018330820}
+--- !u!114 &4607111590394820477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4392241939737196753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31de28acd285c7e41af346faac25185d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pickupPrefab: {fileID: 0}
+  shootTrigger: shoot
+  idleTrigger: idle
+  sprintTrigger: sprint

@@ -40,21 +40,14 @@ public class PlayerWeaponManager : MonoBehaviour
                 currentWeaponGameObject.transform.localRotation = Quaternion.identity;
             }
 
-            currentWeaponScript = currentWeaponGameObject.GetComponent<WeaponBase>();
-
-            WeaponData weaponData = currentWeaponGameObject.GetComponent<WeaponData>();
-            if (weaponData != null)
-            {
-                currentPickup = weaponData.pickupPrefab;
-
-               
-            }
+            EquipWeapon(currentWeaponGameObject);
         }
     }
 
 
     public void OnShoot(InputAction.CallbackContext context)
     {
+        Debug.Log("Shoot pressed");
         if (playerHealth.isPlayerDead)
         {
             return;
@@ -109,7 +102,7 @@ public class PlayerWeaponManager : MonoBehaviour
 
             playerAnimator.SetTrigger(weaponData.idleTrigger);
 
-           
+
         }
 
         Transform firePointTransform = weaponPrefab.transform.Find("WeaponFirePoint");

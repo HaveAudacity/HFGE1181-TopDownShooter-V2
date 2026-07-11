@@ -27,24 +27,41 @@ public abstract class WeaponBase : MonoBehaviour
 
         playerAnimator = GetComponentInParent<Animator>();
 
-        UIManager.Instance.UpdateReloadProgress(1f);
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateReloadProgress(1f);
+        }
     }
 
     public void TryShoot()
     {
+        Debug.Log("TryShoot");
         if (Time.time < nextFireTime || isReloading || currentAmmo <= 0)
             return;
+        Debug.Log("Calling Shoot()");
+        Debug.Log("Bullet Prefab = " + bulletPrefab);
+        Debug.Log("Fire Point = " + firePoint);
 
         Shoot();
-        AudioManager.Instance.Play("ShootWeapon");
-        WeaponData weaponData = this.GetComponent<WeaponData>();
-        playerAnimator.SetTrigger(weaponData.shootTrigger);
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.Play("ShootWeapon");
+        }
+
+        WeaponData weaponData = GetComponent<WeaponData>();
+
+        if (playerAnimator != null && weaponData != null)
+        {
+            playerAnimator.SetTrigger(weaponData.shootTrigger);
+        }
+
         currentAmmo--;
         nextFireTime = Time.time + fireRate;
 
-        UIManager.Instance.UpdateReloadProgress((float)currentAmmo / maxAmmo);
-
-        OnAmmoChanged?.Invoke(currentAmmo, maxAmmo);
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateReloadProgress((float)currentAmmo / maxAmmo);
+        }
 
         if (currentAmmo <= 0)
         {
@@ -66,14 +83,20 @@ public abstract class WeaponBase : MonoBehaviour
         while (timer < reloadTime)
         {
             timer += Time.deltaTime;
-            UIManager.Instance.UpdateReloadProgress(timer / reloadTime);
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.UpdateReloadProgress(timer / reloadTime);
+            }
             yield return null;
         }
 
         currentAmmo = maxAmmo;
         isReloading = false;
 
-        UIManager.Instance.UpdateReloadProgress(1f);
+        if (UIManager.Instance != null)
+        {
+            UIManager.Instance.UpdateReloadProgress(1f);
+        }
         OnAmmoChanged?.Invoke(currentAmmo, maxAmmo);
     }
 
