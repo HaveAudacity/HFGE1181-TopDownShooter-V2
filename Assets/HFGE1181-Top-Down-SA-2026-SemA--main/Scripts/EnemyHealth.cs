@@ -35,31 +35,46 @@ public class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
+        Debug.Log("Enemy took " + amount + " damage");
         if (amount <= 0 || currentHealth <= 0 || isDead)
             return;
 
         currentHealth -= amount;
+        Debug.Log("Current Health = " + currentHealth);
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         onHealthChanged?.Invoke(currentHealth, maxHealth);
-
-        AudioManager.Instance.Play("EnemyTakeDamage");
-
-        if (currentHealth <= 0 && canDie)
+        if (AudioManager.Instance != null)
         {
-            Die();
+            AudioManager.Instance.Play("EnemyTakeDamage");
+        }
+
+        if (currentHealth <= 0)
+        {
+            Debug.Log("Health reached zero");
+            Debug.Log("canDie = " + canDie);
+
+            if (canDie)
+            {
+                Die();
+            }
         }
     }
 
     private void Die()
     {
+        Debug.Log("Enemy Died");
+
         if (isDead)
-        { 
-            return; 
+        {
+            return;
         }
 
         isDead = true;
 
-        AudioManager.Instance.Play("EnemyDeath");
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.Play("EnemyDeath");
+        }
 
         onDeath?.Invoke();
 
