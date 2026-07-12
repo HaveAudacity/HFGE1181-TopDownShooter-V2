@@ -19,6 +19,9 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private string deathTriggerName = "Die";
 
+    [Header("UI")]
+    [SerializeField] private GameObject gameOverPanel;
+
     [HideInInspector] public UnityEvent onDeath;
     [HideInInspector] public UnityEvent<int, int> onHealthChanged;
     public bool isPlayerDead = false;
@@ -113,8 +116,13 @@ public class PlayerHealth : MonoBehaviour
 
         gameObject.tag = "Untagged";
         isPlayerDead = true;
+        if (gameOverPanel != null)
+        {
+            gameOverPanel.SetActive(true);
+        }
 
-      
+        Time.timeScale = 0f;
+
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.Play("PlayerDeath");

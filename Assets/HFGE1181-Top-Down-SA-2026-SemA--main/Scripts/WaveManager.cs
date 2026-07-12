@@ -19,6 +19,9 @@ public class WaveManager : MonoBehaviour
     [SerializeField] private Transform[] spawnPoints;
     [SerializeField] private GameObject enemyPrefab;
 
+    [Header("UI")]
+    [SerializeField] private GameObject victoryPanel;
+
     [Header("Timing")]
     [SerializeField] private float timeBetweenWaves = 10f;
 
@@ -62,6 +65,13 @@ public class WaveManager : MonoBehaviour
         Debug.Log("All Waves Complete!");
 
         onAllWavesComplete?.Invoke();
+
+        if (victoryPanel != null)
+        {
+            victoryPanel.SetActive(true);
+        }
+
+        Time.timeScale = 0f;
     }
 
     private IEnumerator IntermissionTimer(float duration)
