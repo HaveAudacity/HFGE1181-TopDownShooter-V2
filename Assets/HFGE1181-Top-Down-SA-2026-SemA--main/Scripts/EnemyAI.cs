@@ -6,7 +6,7 @@ public class EnemyAI : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 3f;
-    [SerializeField] private float attackRange = 2f;
+    [SerializeField] private float attackRange = 7f;
     [SerializeField] private float minimumPlayerDistance = 0.5f;
 
     [Header("Knockback Settings")]
@@ -55,11 +55,13 @@ public class EnemyAI : MonoBehaviour
             enemy = playerObj.transform;
         }
     }
+
     private void Update()
     {
         if (isKnockedBack)
         {
             knockbackTimer -= Time.deltaTime;
+
             if (knockbackTimer <= 0f)
             {
                 isKnockedBack = false;
@@ -69,7 +71,9 @@ public class EnemyAI : MonoBehaviour
                 stunTimer = stunDurationAfterKnockback;
             }
 
-            animator.SetBool("isWalking", false);
+            if (animator != null)
+                animator.SetBool("isWalking", false);
+
             return;
         }
 
@@ -83,7 +87,9 @@ public class EnemyAI : MonoBehaviour
             }
             else
             {
-                animator.SetBool("isWalking", false);
+                if (animator != null)
+                    animator.SetBool("isWalking", false);
+
                 return;
             }
         }
@@ -118,21 +124,23 @@ public class EnemyAI : MonoBehaviour
 
     private float CalculateDistance()
     {
-        float distance = Vector2.Distance(transform.position, enemy.position);
-        return distance;
+        return Vector2.Distance(transform.position, enemy.position);
     }
 
     private void Movement()
     {
         PlayerHealth pH = playerObj.GetComponent<PlayerHealth>();
 
+        Debug.Log("Distance to player: " + CalculateDistance());
+
         if (pH != null && pH.isPlayerDead)
         {
-            animator.SetBool("isWalking", false);
+            if (animator != null)
+                animator.SetBool("isWalking", false);
+
             return;
         }
 
-        // Move towards the player until inside attack range
         if (CalculateDistance() > attackRange)
         {
             isAttacking = false;
@@ -143,27 +151,31 @@ public class EnemyAI : MonoBehaviour
                 moveSpeed * Time.deltaTime
             );
 
-            animator.SetBool("isWalking", true);
+            if (animator != null)
+                animator.SetBool("isWalking", true);
         }
         else
         {
             Debug.Log("Entered Attack Range");
 
             isAttacking = true;
-            animator.SetBool("isWalking", false);
+
+            if (animator != null)
+                animator.SetBool("isWalking", false);
         }
     }
+
     private void RotateTowardsPlayer()
     {
         Vector2 direction = (enemy.position - transform.position).normalized;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90.0f;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
     private void RotateAwayFromPlayer()
     {
-        Vector2 direction = -1 * (enemy.position - transform.position).normalized;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90.0f;
+        Vector2 direction = -(enemy.position - transform.position).normalized;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
@@ -199,6 +211,10 @@ public class EnemyAI : MonoBehaviour
         isKnockedBack = true;
         knockbackTimer = knockbackDuration;
         rb.linearVelocity = direction.normalized * force;
-        animator.SetBool("isWalking", false);
+
+        if (animator != null)
+        {
+            animator.SetBool("isWalking", false);
+        }
     }
 }

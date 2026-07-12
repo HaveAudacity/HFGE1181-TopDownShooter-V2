@@ -54,7 +54,7 @@ public class EnemySpawnFactory : MonoBehaviour
 
     private void FactoryMovement()
     {
-        
+
         float distance = Vector3.Distance(transform.position, patrolPoints[patrolIndex].position);
 
         if (distance >= distanceAllowance)
@@ -63,13 +63,13 @@ public class EnemySpawnFactory : MonoBehaviour
         }
         else
         {
-            if (patrolIndex < patrolPoints.Length - 1) 
+            if (patrolIndex < patrolPoints.Length - 1)
             {
 
                 patrolIndex++;
-                
+
             }
-            else if (patrolIndex ==  patrolPoints.Length - 1)
+            else if (patrolIndex == patrolPoints.Length - 1)
             {
                 patrolIndex = 0;
             }

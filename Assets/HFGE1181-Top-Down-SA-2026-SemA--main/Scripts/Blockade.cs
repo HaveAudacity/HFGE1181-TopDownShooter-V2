@@ -1,63 +1,35 @@
-using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-[RequireComponent(typeof(PlayerInput))]
 public class Blockade : MonoBehaviour
 {
-    [SerializeField] private GameObject crate;
-    [SerializeField] private float health;
-    [SerializeField] private float maxHealth;
-    [SerializeField] private float damageTick;
+    [Header("Barricade Health")]
+    [SerializeField] private float maxHealth = 100f;
 
-    private bool playerInRange;
-    private bool crateActive;
+    [Header("Enemy Damage")]
+    [SerializeField] private float damagePerSecond = 20f;
+
+    private float health;
 
 
     private void Start()
     {
         health = maxHealth;
-        crate.SetActive(false);
-        crateActive = false;
     }
+
 
     private void Update()
     {
-        if (health >= 0 && crateActive )
+        if (health <= 0)
         {
-            health -= damageTick * Time.deltaTime;
-        }
-        else
-        {
-            crate.SetActive(false);
-            crateActive = false;
+            Destroy(gameObject);
         }
     }
 
-    public void OnInteract(InputAction.CallbackContext context)
+
+    public void TakeDamage(float damage)
     {
-        if (!playerInRange)
-        {
-            return;
-        }
+        health -= damage;
 
-        health = maxHealth;
-        crate.SetActive(true);
-        crateActive = true;
+        Debug.Log("Barricade Health: " + health);
     }
-
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        UIManager.Instance.UpdateInteractText("E");
-        playerInRange = true;
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        UIManager.Instance.UpdateInteractText(" ");
-        playerInRange = false;
-    }
-
-
 }
