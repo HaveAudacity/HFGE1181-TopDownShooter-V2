@@ -51,7 +51,7 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
-            Debug.Log("Player found: " + playerObj.name);
+          
             enemy = playerObj.transform;
         }
     }
@@ -96,13 +96,13 @@ public class EnemyAI : MonoBehaviour
 
         if (isAttacking)
         {
-            Debug.Log("isAttacking = TRUE");
+           
 
             fireRateTimer -= Time.deltaTime;
 
             if (fireRateTimer <= 0f)
             {
-                Debug.Log("Calling AttackPlayer()");
+               
                 AttackPlayer();
             }
         }
@@ -131,8 +131,7 @@ public class EnemyAI : MonoBehaviour
     {
         PlayerHealth pH = playerObj.GetComponent<PlayerHealth>();
 
-        Debug.Log("Distance to player: " + CalculateDistance());
-
+       
         if (pH != null && pH.isPlayerDead)
         {
             if (animator != null)
@@ -156,7 +155,7 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
-            Debug.Log("Entered Attack Range");
+            
 
             isAttacking = true;
 

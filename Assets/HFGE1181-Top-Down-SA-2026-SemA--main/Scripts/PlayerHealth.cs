@@ -54,10 +54,12 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int amount, Vector2 hitSource)
     {
+       
         if (amount <= 0 || currentHealth <= 0 || isInvincible)
             return;
 
         currentHealth -= amount;
+       
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
         onHealthChanged?.Invoke(currentHealth, maxHealth);

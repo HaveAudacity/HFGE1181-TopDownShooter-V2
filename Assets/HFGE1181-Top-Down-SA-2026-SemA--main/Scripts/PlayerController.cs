@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour
     public void OnLook(InputAction.CallbackContext context)
     {
         mousePosition = context.ReadValue<Vector2>();
-        Debug.Log("Mouse Position: " + mousePosition);
+        
     }
 
     public void OnSprint(InputAction.CallbackContext context)
