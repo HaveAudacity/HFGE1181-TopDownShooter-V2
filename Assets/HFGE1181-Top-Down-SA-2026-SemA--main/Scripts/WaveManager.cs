@@ -27,6 +27,8 @@ public class WaveManager : MonoBehaviour
     [HideInInspector] public UnityEvent<float> onWaveTimerUpdated;
 
     private int currentWaveIndex = -1;
+    private int enemiesAlive = 0;
+    private bool waitingForWaveClear = false;
     private bool isWaveActive = false;
     private float waveTimer;
 
@@ -40,7 +42,10 @@ public class WaveManager : MonoBehaviour
         if (waveTimer > 0)
         {
             waveTimer -= Time.deltaTime;
-            UIManager.Instance.UpdateNextWaveTimer(waveTimer);
+            if (UIManager.Instance != null)
+            {
+                UIManager.Instance.UpdateNextWaveTimer(waveTimer);
+            }
         }
     }
 
@@ -53,6 +58,8 @@ public class WaveManager : MonoBehaviour
             StartWave(currentWaveIndex);
             yield return StartCoroutine(SpawnEnemies(waves[currentWaveIndex]));
         }
+
+        Debug.Log("All Waves Complete!");
 
         onAllWavesComplete?.Invoke();
     }
@@ -73,7 +80,10 @@ public class WaveManager : MonoBehaviour
     {
         isWaveActive = true;
         onWaveStarted?.Invoke(waveIndex);
-        Debug.Log($"Wave {waveIndex + 1} started!");
+        Debug.Log("==========");
+        Debug.Log("Wave " + (waveIndex + 1) + " Started");
+        Debug.Log("Enemies to Spawn: " + waves[waveIndex].enemyCount);
+        Debug.Log("==========");
     }
 
     private IEnumerator SpawnEnemies(Wave wave)
@@ -91,6 +101,7 @@ public class WaveManager : MonoBehaviour
             {
                 Transform spawnPoint = activeSpawns[Random.Range(0, activeSpawns.Count)];
                 Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
+                enemiesAlive++;
             }
 
             yield return new WaitForSeconds(wave.spawnInterval);
@@ -101,6 +112,14 @@ public class WaveManager : MonoBehaviour
             }
         }
 
+        waitingForWaveClear = true;
+
+        while (enemiesAlive > 0)
+        {
+            yield return null;
+        }
+
+        waitingForWaveClear = false;
         isWaveActive = false;
     }
 
@@ -114,5 +133,13 @@ public class WaveManager : MonoBehaviour
         }
         return activeSpawns;
     }
+    public void EnemyKilled()
+    {
+        enemiesAlive--;
 
+        if (enemiesAlive < 0)
+            enemiesAlive = 0;
+
+        Debug.Log("Enemies Remaining: " + enemiesAlive);
+    }
 }

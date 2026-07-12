@@ -52,14 +52,17 @@ public class PlayerController : MonoBehaviour
         if (context.performed)
         {
             isSprinting = true;
-            playerAnimator.SetBool("IsSprinting", true);
+            if (playerAnimator != null)
+                playerAnimator.SetBool("IsSprinting", true);
             WeaponData weaponData = playerWeaponManager.currentWeaponGameObject.GetComponent<WeaponData>();
-            playerAnimator.SetTrigger(weaponData.sprintTrigger);
+            if (playerAnimator != null)
+                playerAnimator.SetTrigger(weaponData.sprintTrigger);
         }
         else if (context.canceled)
         {
             isSprinting = false;
-            playerAnimator.SetBool("IsSprinting", false);
+            if (playerAnimator != null)
+                playerAnimator.SetBool("IsSprinting", false);
         }
     }
 
@@ -107,6 +110,9 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyKnockback(Vector2 forceDirection)
     {
+        if (isKnockedBack)
+            return;
+
         isKnockedBack = true;
         knockbackStartPos = rb.position;
         knockbackDirection = forceDirection.normalized;
