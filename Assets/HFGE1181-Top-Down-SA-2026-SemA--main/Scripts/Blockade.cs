@@ -21,6 +21,11 @@ public class Blockade : MonoBehaviour
     {
         if (health <= 0)
         {
+            if (AudioManager.Instance != null)
+            {
+                AudioManager.Instance.Play("BarricadeBreak");
+            }
+
             Destroy(gameObject);
         }
     }

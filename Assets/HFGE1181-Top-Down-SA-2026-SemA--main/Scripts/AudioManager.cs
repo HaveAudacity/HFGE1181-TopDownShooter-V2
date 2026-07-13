@@ -41,6 +41,7 @@ public class AudioManager : MonoBehaviour
 
             audioSources[s.name] = source;
         }
+        Play("BackgroundMusic");
     }
 
     public void Play(string soundName)
