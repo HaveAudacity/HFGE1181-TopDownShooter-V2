@@ -116,6 +116,7 @@ public class PlayerHealth : MonoBehaviour
 
         gameObject.tag = "Untagged";
         isPlayerDead = true;
+
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(true);
