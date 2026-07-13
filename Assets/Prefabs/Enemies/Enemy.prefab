@@ -122,6 +122,9 @@ MonoBehaviour:
   fireRate: 1.5
   projectileSpeed: 1
   attackTriggerName: Attack
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 65
 --- !u!114 &6569160757914393728
 MonoBehaviour:
   m_ObjectHideFlags: 0

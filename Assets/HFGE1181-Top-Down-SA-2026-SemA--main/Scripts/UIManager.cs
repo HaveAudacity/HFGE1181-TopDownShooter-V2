@@ -12,6 +12,10 @@ public class UIManager : MonoBehaviour
 
     [Header("Wave UI")]
     public TMP_Text nextWaveTimerText;
+    public TMP_Text currentWaveText;
+
+    [Header("Enemy UI")]
+    public TMP_Text enemiesRemainingText;
 
     [Header("Reload UI")]
     public Slider reloadSlider;
@@ -46,5 +50,16 @@ public class UIManager : MonoBehaviour
     {
         if (interactText != null) interactText.text = prompt;
     }
-
+    public void UpdateEnemiesRemaining(int remaining)
+    {
+        if (enemiesRemainingText != null)
+            enemiesRemainingText.text = $"Enemies Remaining: {remaining}";
+    }
+    public void UpdateCurrentWave(int currentWave, int totalWaves)
+    {
+        if (currentWaveText != null)
+        {
+            currentWaveText.text = $"Wave {currentWave} / {totalWaves}";
+        }
+    }
 }

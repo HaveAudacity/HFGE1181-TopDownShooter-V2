@@ -20,6 +20,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float projectileSpeed = 1f;
     [SerializeField] private string attackTriggerName = "Attack";
 
+
     private Transform enemy;
     private Rigidbody2D rb;
     private Animator animator;
@@ -177,6 +178,7 @@ public class EnemyAI : MonoBehaviour
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
+   
 
     private void AttackPlayer()
     {
@@ -185,7 +187,7 @@ public class EnemyAI : MonoBehaviour
             Debug.LogError("Projectile or FirePoint is missing!");
             return;
         }
-
+       
         Debug.Log("Enemy Fired");
 
         GameObject bullet = Instantiate(projectile, firePoint.position, firePoint.rotation);

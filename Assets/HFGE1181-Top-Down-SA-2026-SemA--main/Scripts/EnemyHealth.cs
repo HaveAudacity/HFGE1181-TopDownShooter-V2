@@ -80,6 +80,12 @@ public class EnemyHealth : MonoBehaviour
 
         if (waveManager != null)
         {
+            waveManager.EnemyDied();
+        }
+       
+
+        if (waveManager != null)
+        {
             waveManager.EnemyKilled();
         }
 

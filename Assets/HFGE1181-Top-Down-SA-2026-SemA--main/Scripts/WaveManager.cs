@@ -34,6 +34,7 @@ public class WaveManager : MonoBehaviour
     private bool waitingForWaveClear = false;
     private bool isWaveActive = false;
     private float waveTimer;
+    private int enemiesRemaining;
 
     private void Start()
     {
@@ -89,6 +90,7 @@ public class WaveManager : MonoBehaviour
     private void StartWave(int waveIndex)
     {
         isWaveActive = true;
+        UIManager.Instance.UpdateCurrentWave(waveIndex + 1, waves.Count);
         onWaveStarted?.Invoke(waveIndex);
         Debug.Log("==========");
         Debug.Log("Wave " + (waveIndex + 1) + " Started");
@@ -98,6 +100,8 @@ public class WaveManager : MonoBehaviour
 
     private IEnumerator SpawnEnemies(Wave wave)
     {
+        enemiesRemaining = wave.enemyCount;
+        UIManager.Instance.UpdateEnemiesRemaining(enemiesRemaining);
         while (GetActiveSpawnPoints().Count == 0)
         {
             yield return null;
@@ -151,5 +155,14 @@ public class WaveManager : MonoBehaviour
             enemiesAlive = 0;
 
         Debug.Log("Enemies Remaining: " + enemiesAlive);
+    }
+    public void EnemyDied()
+    {
+        enemiesRemaining--;
+
+        if (enemiesRemaining < 0)
+            enemiesRemaining = 0;
+
+        UIManager.Instance.UpdateEnemiesRemaining(enemiesRemaining);
     }
 }
