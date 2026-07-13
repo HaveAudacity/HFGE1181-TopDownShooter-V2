@@ -9,7 +9,11 @@ public class PauseManager : MonoBehaviour
     public GameObject pauseMenuUI;
 
     private bool isPaused = false;
-
+    private void Start()
+    {
+        if (pauseMenuUI != null)
+            pauseMenuUI.SetActive(false);
+    }
     private void Awake()
     {
         if (Instance == null) Instance = this;

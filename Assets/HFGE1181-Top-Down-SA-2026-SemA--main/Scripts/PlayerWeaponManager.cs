@@ -69,11 +69,19 @@ public class PlayerWeaponManager : MonoBehaviour
                 Vector2 randomDir = Random.insideUnitCircle.normalized;
                 Vector3 dropPos = transform.position + (Vector3)randomDir * 2f;
 
-                GameObject droppedWeapon = Instantiate(weaponData.pickupPrefab, dropPos, Quaternion.Euler(0, 0, Random.Range(0f, 360f)));
+                GameObject droppedWeapon = Instantiate(
+     weaponData.pickupPrefab,
+     dropPos,
+     Quaternion.Euler(0, 0, Random.Range(0f, 360f))
+ );
 
                 Collider2D dropCollider = droppedWeapon.GetComponent<Collider2D>();
+
                 if (dropCollider != null)
+                {
+                    dropCollider.enabled = false;
                     StartCoroutine(EnablePickupAfterDelay(dropCollider, pickupDelay));
+                }
 
                 Rigidbody2D rb = droppedWeapon.GetComponent<Rigidbody2D>();
                 if (rb != null)
