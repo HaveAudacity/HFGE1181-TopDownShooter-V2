@@ -9,14 +9,17 @@ public class WeaponPickup : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         PlayerWeaponManager playerWeapon = collision.GetComponent<PlayerWeaponManager>();
-        if (playerWeapon != null)
+
+        if (playerWeapon == null)
+            return;
+
+        playerWeapon.SwapWeapon(weaponGameObjectPrefab, pickupPrefab);
+
+        if (AudioManager.Instance != null)
         {
-            playerWeapon.SwapWeapon(weaponGameObjectPrefab, pickupPrefab);
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.Play("WeaponPickup");
-            }
-            Destroy(gameObject);
+            AudioManager.Instance.Play("WeaponPickup");
         }
+
+        Destroy(gameObject);
     }
 }

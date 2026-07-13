@@ -5,36 +5,36 @@ public class Blockade : MonoBehaviour
     [Header("Barricade Health")]
     [SerializeField] private float maxHealth = 100f;
 
-    [Header("Enemy Damage")]
-    [SerializeField] private float damagePerSecond = 20f;
-
-    private float health;
-
+    private float currentHealth;
 
     private void Start()
     {
-        health = maxHealth;
+        currentHealth = maxHealth;
     }
-
-
-    private void Update()
-    {
-        if (health <= 0)
-        {
-            if (AudioManager.Instance != null)
-            {
-                AudioManager.Instance.Play("BarricadeBreak");
-            }
-
-            Destroy(gameObject);
-        }
-    }
-
 
     public void TakeDamage(float damage)
     {
-        health -= damage;
+        if (damage <= 0f)
+        {
+            return;
+        }
 
-        Debug.Log("Barricade Health: " + health);
+        currentHealth -= damage;
+        currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+
+        if (currentHealth <= 0f)
+        {
+            BreakBarricade();
+        }
+    }
+
+    private void BreakBarricade()
+    {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.Play("BarricadeBreak");
+        }
+
+        Destroy(gameObject);
     }
 }

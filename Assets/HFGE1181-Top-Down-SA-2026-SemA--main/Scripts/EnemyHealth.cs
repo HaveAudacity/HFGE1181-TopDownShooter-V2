@@ -7,7 +7,7 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] private int maxHealth = 50;
     [SerializeField] private bool canDie = true;
     [SerializeField] private bool destroyOnDeath = true;
-    [SerializeField] private float destroyDelay = 2.0f;
+    [SerializeField] private float destroyDelay = 2f;
 
     [Header("Animation")]
     [SerializeField] private Animator animator;
@@ -17,7 +17,7 @@ public class EnemyHealth : MonoBehaviour
     [HideInInspector] public UnityEvent<int, int> onHealthChanged;
 
     private int currentHealth;
-    private bool isDead = false;
+    private bool isDead;
 
     public int CurrentHealth => currentHealth;
     public int MaxHealth => maxHealth;
@@ -35,38 +35,29 @@ public class EnemyHealth : MonoBehaviour
 
     public void TakeDamage(int amount)
     {
-      ;
         if (amount <= 0 || currentHealth <= 0 || isDead)
             return;
 
         currentHealth -= amount;
-        
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+
         onHealthChanged?.Invoke(currentHealth, maxHealth);
+
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.Play("EnemyTakeDamage");
         }
 
-        if (currentHealth <= 0)
+        if (currentHealth <= 0 && canDie)
         {
-            
-
-            if (canDie)
-            {
-                Die();
-            }
+            Die();
         }
     }
 
     private void Die()
     {
-       
-
         if (isDead)
-        {
             return;
-        }
 
         isDead = true;
 
@@ -76,17 +67,13 @@ public class EnemyHealth : MonoBehaviour
         }
 
         onDeath?.Invoke();
+
         WaveManager waveManager = FindFirstObjectByType<WaveManager>();
 
         if (waveManager != null)
         {
-            waveManager.EnemyDied();
-        }
-       
-
-        if (waveManager != null)
-        {
             waveManager.EnemyKilled();
+            waveManager.EnemyDied();
         }
 
         if (animator != null && !string.IsNullOrEmpty(deathTriggerName))

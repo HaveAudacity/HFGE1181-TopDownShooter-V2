@@ -9,11 +9,10 @@ public class PlayerHealth : MonoBehaviour
     [Header("Health Settings")]
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private bool destroyOnDeath = false;
-    [SerializeField] private float destroyDelay = 5.0f;
+    [SerializeField] private float destroyDelay = 5f;
 
     [Header("Damage Response")]
     [SerializeField] private float invincibilityDuration = 1f;
-    [SerializeField] private float knockbackForce = 5f;
 
     [Header("Animation")]
     [SerializeField] private Animator animator;
@@ -24,12 +23,16 @@ public class PlayerHealth : MonoBehaviour
 
     [HideInInspector] public UnityEvent onDeath;
     [HideInInspector] public UnityEvent<int, int> onHealthChanged;
+
     public bool isPlayerDead = false;
 
     private int currentHealth;
-    private bool isInvincible = false;
+    private bool isInvincible;
+
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
+    private PlayerController playerController;
+
     private Color originalColor;
 
     public int CurrentHealth => currentHealth;
@@ -39,8 +42,9 @@ public class PlayerHealth : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        originalColor = spriteRenderer.color;
+        playerController = GetComponent<PlayerController>();
 
+        originalColor = spriteRenderer.color;
         currentHealth = maxHealth;
 
         if (animator == null)
@@ -49,6 +53,7 @@ public class PlayerHealth : MonoBehaviour
         }
 
         onHealthChanged?.Invoke(currentHealth, maxHealth);
+
         if (UIManager.Instance != null)
         {
             UIManager.Instance.UpdateHealth(currentHealth, maxHealth);
@@ -57,15 +62,16 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int amount, Vector2 hitSource)
     {
-       
         if (amount <= 0 || currentHealth <= 0 || isInvincible)
+        {
             return;
+        }
 
         currentHealth -= amount;
-       
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
         onHealthChanged?.Invoke(currentHealth, maxHealth);
+
         if (UIManager.Instance != null)
         {
             UIManager.Instance.UpdateHealth(currentHealth, maxHealth);
@@ -76,11 +82,10 @@ public class PlayerHealth : MonoBehaviour
             AudioManager.Instance.Play("PlayerTakeDamage");
         }
 
-        PlayerController playerController = GetComponent<PlayerController>();
         if (playerController != null)
         {
-            Vector2 knockbackDir = ((Vector2)rb.position - hitSource).normalized;
-            playerController.ApplyKnockback(knockbackDir);
+            Vector2 knockbackDirection = ((Vector2)transform.position - hitSource).normalized;
+            playerController.ApplyKnockback(knockbackDirection);
         }
 
         StartCoroutine(InvincibilityCoroutine());
@@ -93,12 +98,16 @@ public class PlayerHealth : MonoBehaviour
 
     public void Heal(int amount)
     {
-        if (amount <= 0 || currentHealth <= 0) return;
+        if (amount <= 0 || currentHealth <= 0)
+        {
+            return;
+        }
 
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
         onHealthChanged?.Invoke(currentHealth, maxHealth);
+
         if (UIManager.Instance != null)
         {
             UIManager.Instance.UpdateHealth(currentHealth, maxHealth);
@@ -107,6 +116,13 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
+        if (isPlayerDead)
+        {
+            return;
+        }
+
+        isPlayerDead = true;
+
         onDeath?.Invoke();
 
         if (animator != null && !string.IsNullOrEmpty(deathTriggerName))
@@ -115,7 +131,6 @@ public class PlayerHealth : MonoBehaviour
         }
 
         gameObject.tag = "Untagged";
-        isPlayerDead = true;
 
         if (gameOverPanel != null)
         {
@@ -129,11 +144,8 @@ public class PlayerHealth : MonoBehaviour
             AudioManager.Instance.Play("PlayerDeath");
         }
 
-        if (rb != null)
-        {
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-            rb.linearVelocity = Vector2.zero;
-        }
+        rb.linearVelocity = Vector2.zero;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
 
         if (destroyOnDeath)
         {
@@ -144,8 +156,11 @@ public class PlayerHealth : MonoBehaviour
     private IEnumerator InvincibilityCoroutine()
     {
         isInvincible = true;
+
         spriteRenderer.color = Color.white;
+
         yield return new WaitForSeconds(invincibilityDuration);
+
         spriteRenderer.color = originalColor;
         isInvincible = false;
     }

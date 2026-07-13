@@ -5,43 +5,67 @@ using System.Collections;
 
 public class ScreenFade : MonoBehaviour
 {
-    public Image fadeImage;
-    public float fadeDuration = 1f;
+    [Header("Fade Settings")]
+    [SerializeField] private Image fadeImage;
+    [SerializeField] private float fadeDuration = 1f;
 
     private void Start()
     {
-        StartCoroutine(FadeIn());
+        if (fadeImage != null)
+        {
+            StartCoroutine(FadeIn());
+        }
     }
 
     public void LoadScene(string sceneName)
     {
-        StartCoroutine(FadeOutAndLoad(sceneName));
+        if (fadeImage != null)
+        {
+            StartCoroutine(FadeOutAndLoad(sceneName));
+        }
+        else
+        {
+            SceneManager.LoadScene(sceneName);
+        }
     }
 
     private IEnumerator FadeIn()
     {
         float timer = 0f;
-        Color c = fadeImage.color;
+        Color color = fadeImage.color;
+
         while (timer < fadeDuration)
         {
             timer += Time.deltaTime;
-            c.a = 1 - (timer / fadeDuration);
-            fadeImage.color = c;
+
+            color.a = 1f - (timer / fadeDuration);
+            fadeImage.color = color;
+
             yield return null;
         }
+
+        color.a = 0f;
+        fadeImage.color = color;
     }
 
     private IEnumerator FadeOutAndLoad(string sceneName)
     {
         float timer = 0f;
-        Color c = fadeImage.color;
+        Color color = fadeImage.color;
+
         while (timer < fadeDuration)
         {
             timer += Time.deltaTime;
-            c.a = timer / fadeDuration;
-            fadeImage.color = c;
+
+            color.a = timer / fadeDuration;
+            fadeImage.color = color;
+
             yield return null;
         }
+
+        color.a = 1f;
+        fadeImage.color = color;
+
         SceneManager.LoadScene(sceneName);
     }
 }

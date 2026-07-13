@@ -9,9 +9,8 @@ public abstract class WeaponBase : MonoBehaviour
     [SerializeField] protected float reloadTime = 1.5f;
     [SerializeField] protected GameObject bulletPrefab;
 
-    [SerializeField] public Transform firePoint;
+    public Transform firePoint;
 
-    [Header("Animator")]
     private Animator playerAnimator;
 
     protected int currentAmmo;
@@ -35,15 +34,11 @@ public abstract class WeaponBase : MonoBehaviour
 
     public void TryShoot()
     {
-
-        Debug.Log("TryShoot called on " + gameObject.name);
         if (Time.time < nextFireTime || isReloading || currentAmmo <= 0)
             return;
-        Debug.Log("Calling Shoot()");
-        Debug.Log("Bullet Prefab = " + bulletPrefab);
-        Debug.Log("Fire Point = " + firePoint);
 
         Shoot();
+
         if (AudioManager.Instance != null)
         {
             AudioManager.Instance.Play("ShootWeapon");
@@ -73,21 +68,26 @@ public abstract class WeaponBase : MonoBehaviour
     public void Reload()
     {
         if (!isReloading)
+        {
             StartCoroutine(ReloadCoroutine());
+        }
     }
 
     protected virtual IEnumerator ReloadCoroutine()
     {
         isReloading = true;
+
         float timer = 0f;
 
         while (timer < reloadTime)
         {
             timer += Time.deltaTime;
+
             if (UIManager.Instance != null)
             {
                 UIManager.Instance.UpdateReloadProgress(timer / reloadTime);
             }
+
             yield return null;
         }
 
@@ -98,6 +98,7 @@ public abstract class WeaponBase : MonoBehaviour
         {
             UIManager.Instance.UpdateReloadProgress(1f);
         }
+
         OnAmmoChanged?.Invoke(currentAmmo, maxAmmo);
     }
 

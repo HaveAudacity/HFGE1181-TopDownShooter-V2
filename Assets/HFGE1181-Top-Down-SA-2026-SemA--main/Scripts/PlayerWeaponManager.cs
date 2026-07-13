@@ -1,5 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -32,10 +31,13 @@ public class PlayerWeaponManager : MonoBehaviour
         {
             if (currentWeaponGameObject.transform.parent != weaponParent)
             {
-                currentWeaponGameObject = Instantiate(currentWeaponGameObject, weaponParent.position, weaponParent.rotation, weaponParent);
-                Debug.Log("Equipped: " + currentWeaponGameObject.name);
+                currentWeaponGameObject = Instantiate(
+                    currentWeaponGameObject,
+                    weaponParent.position,
+                    weaponParent.rotation,
+                    weaponParent
+                );
             }
-
             else
             {
                 currentWeaponGameObject.transform.localPosition = Vector3.zero;
@@ -43,18 +45,13 @@ public class PlayerWeaponManager : MonoBehaviour
             }
 
             EquipWeapon(currentWeaponGameObject);
-            Debug.Log("Current Weapon Script: " + currentWeaponScript);
         }
     }
 
-
     public void OnShoot(InputAction.CallbackContext context)
     {
-        Debug.Log("Shoot pressed");
         if (playerHealth.isPlayerDead)
-        {
             return;
-        }
 
         if (context.performed && currentWeaponScript != null)
         {
@@ -64,24 +61,12 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public void SwapWeapon(GameObject newWeaponPrefab, GameObject newPickupPrefab)
     {
-        Debug.Log("=== NEW SWAPWEAPON CODE RUNNING ===");
-
         if (currentWeaponGameObject != null)
         {
-            Debug.Log("Current weapon: " + currentWeaponGameObject.name);
-
             WeaponData weaponData = currentWeaponGameObject.GetComponent<WeaponData>();
-            Debug.Log("WeaponData = " + weaponData);
-
-            if (weaponData != null)
-            {
-                Debug.Log("Pickup prefab = " + weaponData.pickupPrefab);
-            }
 
             if (weaponData != null && weaponData.pickupPrefab != null)
             {
-                Debug.Log("Dropping: " + weaponData.pickupPrefab.name);
-
                 Vector2 randomDir = Random.insideUnitCircle.normalized;
                 Vector3 dropPos = transform.position + (Vector3)randomDir * 2f;
 
@@ -91,10 +76,7 @@ public class PlayerWeaponManager : MonoBehaviour
                     Quaternion.Euler(0, 0, Random.Range(0f, 360f))
                 );
 
-                Debug.Log("Dropped weapon created: " + droppedWeapon.name);
-
                 Collider2D dropCollider = droppedWeapon.GetComponent<Collider2D>();
-                Debug.Log("Drop collider = " + dropCollider);
 
                 if (dropCollider != null)
                 {
@@ -112,11 +94,8 @@ public class PlayerWeaponManager : MonoBehaviour
                 }
             }
 
-            Debug.Log("Destroying current weapon");
             Destroy(currentWeaponGameObject);
         }
-
-        Debug.Log("Instantiating: " + newWeaponPrefab.name);
 
         currentWeaponGameObject = Instantiate(
             newWeaponPrefab,
@@ -125,12 +104,7 @@ public class PlayerWeaponManager : MonoBehaviour
             weaponParent
         );
 
-        Debug.Log("New weapon object: " + currentWeaponGameObject.name);
-
         EquipWeapon(currentWeaponGameObject);
-
-        Debug.Log("Weapon script = " + currentWeaponScript);
-        Debug.Log("=== SwapWeapon END ===");
     }
 
     private void EquipWeapon(GameObject weaponPrefab)
@@ -138,6 +112,7 @@ public class PlayerWeaponManager : MonoBehaviour
         currentWeaponScript = weaponPrefab.GetComponent<WeaponBase>();
 
         WeaponData weaponData = weaponPrefab.GetComponent<WeaponData>();
+
         if (weaponData != null)
         {
             currentPickup = weaponData.pickupPrefab;
@@ -146,6 +121,7 @@ public class PlayerWeaponManager : MonoBehaviour
             {
                 playerAnimator.SetTrigger(weaponData.idleTrigger);
             }
+
             if (UIManager.Instance != null)
             {
                 UIManager.Instance.UpdateWeaponIcon(weaponData.weaponIcon);
@@ -153,6 +129,7 @@ public class PlayerWeaponManager : MonoBehaviour
         }
 
         Transform firePointTransform = weaponPrefab.transform.Find("WeaponFirePoint");
+
         if (firePointTransform != null)
         {
             weaponFirePoint = firePointTransform;
@@ -163,6 +140,7 @@ public class PlayerWeaponManager : MonoBehaviour
     private IEnumerator StopDropMovement(Rigidbody2D rb)
     {
         yield return new WaitForSeconds(dropMoveDuration);
+
         if (rb != null)
         {
             rb.linearVelocity = Vector2.zero;
@@ -172,15 +150,13 @@ public class PlayerWeaponManager : MonoBehaviour
 
     private IEnumerator EnablePickupAfterDelay(Collider2D collider, float delay)
     {
-        Debug.Log("Pickup disabled");
-
         collider.enabled = false;
 
         yield return new WaitForSeconds(delay);
 
-        Debug.Log("Pickup enabled");
-
         if (collider != null)
+        {
             collider.enabled = true;
+        }
     }
 }

@@ -1,6 +1,4 @@
-using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -17,21 +15,20 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private GameObject projectile;
     [SerializeField] private Transform firePoint;
     [SerializeField] private float fireRate = 1.5f;
-    [SerializeField] private float projectileSpeed = 1f;
     [SerializeField] private string attackTriggerName = "Attack";
 
-
-    private Transform enemy;
+    private Transform player;
     private Rigidbody2D rb;
     private Animator animator;
-    private GameObject playerObj;
+    private PlayerHealth playerHealth;
 
-    private bool isKnockedBack = false;
-    private bool isAttacking = false;
-    private float fireRateTimer = 0f;
-    private float knockbackTimer = 0f;
-    private float stunTimer = 0f;
-    private bool isStunned = false;
+    private bool isKnockedBack;
+    private bool isAttacking;
+    private bool isStunned;
+
+    private float fireRateTimer;
+    private float knockbackTimer;
+    private float stunTimer;
 
     private void Awake()
     {
@@ -44,96 +41,97 @@ public class EnemyAI : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
-        playerObj = GameObject.FindGameObjectWithTag("Player");
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
 
-        if (playerObj == null)
+        if (playerObject == null)
         {
-            Debug.LogError("Player NOT found!");
+            Debug.LogError("Player not found.");
+            enabled = false;
+            return;
         }
-        else
-        {
-          
-            enemy = playerObj.transform;
-        }
+
+        player = playerObject.transform;
+        playerHealth = playerObject.GetComponent<PlayerHealth>();
     }
 
     private void Update()
     {
-        if (isKnockedBack)
-        {
-            knockbackTimer -= Time.deltaTime;
-
-            if (knockbackTimer <= 0f)
-            {
-                isKnockedBack = false;
-                rb.linearVelocity = Vector2.zero;
-
-                isStunned = true;
-                stunTimer = stunDurationAfterKnockback;
-            }
-
-            if (animator != null)
-                animator.SetBool("isWalking", false);
-
+        if (HandleKnockback())
             return;
-        }
 
-        if (isStunned)
-        {
-            stunTimer -= Time.deltaTime;
-
-            if (stunTimer <= 0f)
-            {
-                isStunned = false;
-            }
-            else
-            {
-                if (animator != null)
-                    animator.SetBool("isWalking", false);
-
-                return;
-            }
-        }
+        if (HandleStun())
+            return;
 
         if (isAttacking)
         {
-           
-
             fireRateTimer -= Time.deltaTime;
 
             if (fireRateTimer <= 0f)
             {
-               
                 AttackPlayer();
             }
         }
 
-        if (enemy != null)
-        {
-            if (CalculateDistance() > minimumPlayerDistance)
-            {
-                RotateTowardsPlayer();
-            }
-            else
-            {
-                RotateAwayFromPlayer();
-            }
+        if (player == null)
+            return;
 
-            Movement();
+        if (CalculateDistance() > minimumPlayerDistance)
+            RotateTowardsPlayer();
+        else
+            RotateAwayFromPlayer();
+
+        Movement();
+    }
+
+    private bool HandleKnockback()
+    {
+        if (!isKnockedBack)
+            return false;
+
+        knockbackTimer -= Time.deltaTime;
+
+        if (knockbackTimer <= 0f)
+        {
+            isKnockedBack = false;
+            rb.linearVelocity = Vector2.zero;
+
+            isStunned = true;
+            stunTimer = stunDurationAfterKnockback;
         }
+
+        if (animator != null)
+            animator.SetBool("isWalking", false);
+
+        return true;
+    }
+
+    private bool HandleStun()
+    {
+        if (!isStunned)
+            return false;
+
+        stunTimer -= Time.deltaTime;
+
+        if (stunTimer <= 0f)
+        {
+            isStunned = false;
+            return false;
+        }
+
+        if (animator != null)
+            animator.SetBool("isWalking", false);
+
+        return true;
     }
 
     private float CalculateDistance()
     {
-        return Vector2.Distance(transform.position, enemy.position);
+        return Vector2.Distance(transform.position, player.position);
     }
 
     private void Movement()
     {
-        PlayerHealth pH = playerObj.GetComponent<PlayerHealth>();
-
-       
-        if (pH != null && pH.isPlayerDead)
+        if (playerHealth != null && playerHealth.isPlayerDead)
         {
             if (animator != null)
                 animator.SetBool("isWalking", false);
@@ -147,17 +145,14 @@ public class EnemyAI : MonoBehaviour
 
             transform.position = Vector2.MoveTowards(
                 transform.position,
-                enemy.position,
-                moveSpeed * Time.deltaTime
-            );
+                player.position,
+                moveSpeed * Time.deltaTime);
 
             if (animator != null)
                 animator.SetBool("isWalking", true);
         }
         else
         {
-            
-
             isAttacking = true;
 
             if (animator != null)
@@ -167,28 +162,25 @@ public class EnemyAI : MonoBehaviour
 
     private void RotateTowardsPlayer()
     {
-        Vector2 direction = (enemy.position - transform.position).normalized;
+        Vector2 direction = (player.position - transform.position).normalized;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
-        transform.rotation = Quaternion.Euler(0, 0, angle);
+        transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
 
     private void RotateAwayFromPlayer()
     {
-        Vector2 direction = -(enemy.position - transform.position).normalized;
+        Vector2 direction = -(player.position - transform.position).normalized;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
-        transform.rotation = Quaternion.Euler(0, 0, angle);
+        transform.rotation = Quaternion.Euler(0f, 0f, angle);
     }
-   
 
     private void AttackPlayer()
     {
         if (projectile == null || firePoint == null)
         {
-            Debug.LogError("Projectile or FirePoint is missing!");
+            Debug.LogError("Projectile or FirePoint is missing.");
             return;
         }
-       
-        Debug.Log("Enemy Fired");
 
         GameObject bullet = Instantiate(projectile, firePoint.position, firePoint.rotation);
 

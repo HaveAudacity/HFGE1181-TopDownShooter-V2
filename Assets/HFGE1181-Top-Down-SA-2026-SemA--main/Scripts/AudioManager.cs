@@ -3,21 +3,24 @@ using System.Collections.Generic;
 
 public class AudioManager : MonoBehaviour
 {
-    [HideInInspector] public static AudioManager Instance;
+    public static AudioManager Instance;
 
     [System.Serializable]
     public class Sound
     {
         public string name;
         public AudioClip clip;
-        [Range(0f, 1f)] public float volume = 1f;
+
+        [Range(0f, 1f)]
+        public float volume = 1f;
+
         public bool loop = false;
     }
 
     [Header("Sounds")]
-    public List<Sound> sounds;
+    [SerializeField] private List<Sound> sounds = new List<Sound>();
 
-    private Dictionary<string, AudioSource> audioSources = new Dictionary<string, AudioSource>();
+    private readonly Dictionary<string, AudioSource> audioSources = new();
 
     private void Awake()
     {
@@ -32,35 +35,46 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-        foreach (var s in sounds)
+        foreach (Sound sound in sounds)
         {
             AudioSource source = gameObject.AddComponent<AudioSource>();
-            source.clip = s.clip;
-            source.volume = s.volume;
-            source.loop = s.loop;
 
-            audioSources[s.name] = source;
+            source.clip = sound.clip;
+            source.volume = sound.volume;
+            source.loop = sound.loop;
+
+            audioSources.Add(sound.name, source);
         }
+
         Play("BackgroundMusic");
     }
 
     public void Play(string soundName)
     {
-        if (audioSources.ContainsKey(soundName))
+        if (!audioSources.TryGetValue(soundName, out AudioSource source))
         {
-            audioSources[soundName].PlayOneShot(audioSources[soundName].clip);
+            Debug.LogWarning($"Sound not found: {soundName}");
+            return;
+        }
+
+        if (source.loop)
+        {
+            if (!source.isPlaying)
+            {
+                source.Play();
+            }
         }
         else
         {
-            Debug.LogWarning("Sound not found: " + soundName);
+            source.PlayOneShot(source.clip);
         }
     }
 
     public void Stop(string soundName)
     {
-        if (audioSources.ContainsKey(soundName))
+        if (audioSources.TryGetValue(soundName, out AudioSource source))
         {
-            audioSources[soundName].Stop();
+            source.Stop();
         }
     }
 }
