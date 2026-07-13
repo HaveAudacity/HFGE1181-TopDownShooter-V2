@@ -182,7 +182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31de28acd285c7e41af346faac25185d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pickupPrefab: {fileID: 0}
+  pickupPrefab: {fileID: 5204486457547670042, guid: 41b16ce16d8858a48aacfa1a229a2601, type: 3}
   weaponIcon: {fileID: 4319395737909131107, guid: 1a37eedd70b9b3044b68412a28cb7118, type: 3}
   shootTrigger: shoot
   idleTrigger: idle

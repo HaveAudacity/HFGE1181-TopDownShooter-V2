@@ -64,13 +64,19 @@ public class PlayerWeaponManager : MonoBehaviour
 
     public void SwapWeapon(GameObject newWeaponPrefab, GameObject newPickupPrefab)
     {
-        Debug.Log("=== SwapWeapon START ===");
+        Debug.Log("=== NEW SWAPWEAPON CODE RUNNING ===");
 
         if (currentWeaponGameObject != null)
         {
             Debug.Log("Current weapon: " + currentWeaponGameObject.name);
 
             WeaponData weaponData = currentWeaponGameObject.GetComponent<WeaponData>();
+            Debug.Log("WeaponData = " + weaponData);
+
+            if (weaponData != null)
+            {
+                Debug.Log("Pickup prefab = " + weaponData.pickupPrefab);
+            }
 
             if (weaponData != null && weaponData.pickupPrefab != null)
             {
@@ -88,6 +94,7 @@ public class PlayerWeaponManager : MonoBehaviour
                 Debug.Log("Dropped weapon created: " + droppedWeapon.name);
 
                 Collider2D dropCollider = droppedWeapon.GetComponent<Collider2D>();
+                Debug.Log("Drop collider = " + dropCollider);
 
                 if (dropCollider != null)
                 {
@@ -165,8 +172,14 @@ public class PlayerWeaponManager : MonoBehaviour
 
     private IEnumerator EnablePickupAfterDelay(Collider2D collider, float delay)
     {
+        Debug.Log("Pickup disabled");
+
         collider.enabled = false;
+
         yield return new WaitForSeconds(delay);
+
+        Debug.Log("Pickup enabled");
+
         if (collider != null)
             collider.enabled = true;
     }
