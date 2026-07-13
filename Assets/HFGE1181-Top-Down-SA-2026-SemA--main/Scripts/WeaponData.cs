@@ -3,6 +3,8 @@ using UnityEngine;
 public class WeaponData : MonoBehaviour
 {
     public GameObject pickupPrefab;
+    [Header("UI")]
+    public Sprite weaponIcon;
 
     [Header("Weapon Animation")]
     public string shootTrigger;

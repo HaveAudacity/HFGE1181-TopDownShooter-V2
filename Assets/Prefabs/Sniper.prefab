@@ -166,6 +166,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pickupPrefab: {fileID: 5204486457547670042, guid: 45ef84032ce410a4fbf0a9043f302923, type: 3}
+  weaponIcon: {fileID: -7040960777665541239, guid: 381c4fac2d6a0fa4faf5240eb647cb1a, type: 3}
   shootTrigger: shoot
   idleTrigger: idle
   sprintTrigger: sprint

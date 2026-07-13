@@ -35,7 +35,8 @@ public abstract class WeaponBase : MonoBehaviour
 
     public void TryShoot()
     {
-        Debug.Log("TryShoot");
+
+        Debug.Log("TryShoot called on " + gameObject.name);
         if (Time.time < nextFireTime || isReloading || currentAmmo <= 0)
             return;
         Debug.Log("Calling Shoot()");

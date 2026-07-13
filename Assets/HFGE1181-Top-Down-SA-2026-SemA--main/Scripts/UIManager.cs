@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     [Header("Player UI")]
     public Slider healthSlider;
     public TMP_Text healthText;
+    public Image weaponIcon;
 
     [Header("Wave UI")]
     public TMP_Text nextWaveTimerText;
@@ -60,6 +61,14 @@ public class UIManager : MonoBehaviour
         if (currentWaveText != null)
         {
             currentWaveText.text = $"Wave {currentWave} / {totalWaves}";
+        }
+    }
+    public void UpdateWeaponIcon(Sprite icon)
+    {
+        if (weaponIcon != null)
+        {
+            weaponIcon.sprite = icon;
+            weaponIcon.enabled = (icon != null);
         }
     }
 }
